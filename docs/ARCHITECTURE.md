@@ -15,6 +15,7 @@ The repository contains three separately started services. This document describ
 ```text
 Browser (Vue)
    ├── Spring Boot service → database / uploaded files
+   │    └── optional /ai/chat → DeepSeek text recommendations (local-only)
    └── Flask inference service → YOLO model weights
 ```
 
@@ -27,4 +28,4 @@ The service endpoints and credentials must be checked in their respective config
 - Keep existing model weights accessible until inference paths have been tested.
 - Remove tracked generated output only after confirming that no demo or runtime relies on it.
 
-**DeepSeek note:** Existing project documentation describes DeepSeek as an assistant during development; it should not be characterized as a runtime inference dependency without source verification.
+**DeepSeek runtime role:** Three Vue pages request text suggestions / chat through Spring Boot's optional local-only relay. YOLO remains the disease-detection inference engine. See [DEEPSEEK.md](DEEPSEEK.md).
