@@ -19,7 +19,7 @@ frontend/      Vue 3 + Vite web interface
 backend/       Spring Boot API + optional local DeepSeek relay
 inference/     Flask + YOLO image/video inference
 database/      SQL schema
-assets/        (planned) demonstration assets
+assets/samples/ Sample images for demonstrations
 docs/          Configuration and design notes
 ```
 
@@ -27,13 +27,13 @@ See [architecture](docs/ARCHITECTURE.md) and [migration notes](docs/MIGRATION.md
 
 ## Overview
 
-**CropLens** is an intelligent crop disease detection platform that leverages the powerful **YOLO (You Only Look Once)** algorithm for real-time object detection. It is built with a modern, decoupled, full-stack architecture, with optional **DeepSeek** chat and agronomic text recommendations routed through a local-only Spring Boot endpoint. The system provides an end-to-end solution for identifying crop diseases from images, videos, and live camera feeds, aiming to offer an efficient and accurate tool for agricultural producers and researchers.
+**CropLens** is an intelligent crop disease detection platform that leverages the **YOLO (You Only Look Once)** object detection models for real-time object detection. It is built with a modern, decoupled, full-stack architecture, with optional **DeepSeek** chat and agronomic text recommendations routed through a local-only Spring Boot endpoint. The system provides an end-to-end solution for identifying crop diseases from images, videos, and live camera feeds, providing a reference implementation for agricultural producers and researchers.
 
 ## Features
 
 - **Optional AI Assistant**: DeepSeek provides text suggestions and chat in three interface views; the feature is disabled by default until locally configured. [Setup & security](docs/DEEPSEEK.md).
 - **Multi-source Detection**: Supports disease detection from static images, video files, and real-time camera streams.
-- **High-Performance Backend**: A microservices architecture featuring a **Flask** server for handling AI model inferences and a **Spring Boot** server for business logic, data management, and user interactions.
+- **Separated Services**: Flask handles model inference; Spring Boot handles application APIs and data management.
 - **Modern Frontend**: A responsive and user-friendly web interface built with **Vue 3**, **Vite**, and **Element Plus**.
 - **Real-time Communication**: Utilizes **WebSocket** for instant feedback during video processing and **ECharts** for rich data visualization of detection results.
 - **Scalable & Decoupled**: The clear separation of frontend, business logic, and AI services allows for independent development, scaling, and maintenance.
@@ -47,7 +47,7 @@ See [architecture](docs/ARCHITECTURE.md) and [migration notes](docs/MIGRATION.md
 
 ## Use cases
 
-- **Smart Agriculture**: Assists farmers in quickly identifying crop diseases for timely intervention.
+- **Smart Agriculture**: Demonstrates image-based crop disease identification; decisions should be verified by qualified agronomy experts.
 - **Agricultural Research**: Provides researchers with a tool for automated data collection and analysis of plant pathology.
 - **Educational Tool**: Serves as a comprehensive full-stack project for developers to learn about integrating AI models with web applications.
 
