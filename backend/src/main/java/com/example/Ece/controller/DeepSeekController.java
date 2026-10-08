@@ -49,7 +49,8 @@ public class DeepSeekController {
             return error(HttpStatus.FORBIDDEN, "Local requests only");
         }
         String origin = request.getHeader("Origin");
-        if (origin != null && !("http://localhost:8100".equals(origin)
+        // Reject requests without a browser Origin header in this local-only demo.
+        if (origin == null || !("http://localhost:8100".equals(origin)
                 || "http://127.0.0.1:8100".equals(origin))) {
             return error(HttpStatus.FORBIDDEN, "Origin is not allowed");
         }
