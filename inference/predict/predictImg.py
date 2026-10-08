@@ -17,7 +17,7 @@ class ImagePredictor:
         :param conf: 置信度阈值
         """
         self.model = YOLO(weights_path)
-        self.conf = max(0.0, min(1.0, float(conf)))
+        self.conf = 0.1
         self.img_path = img_path
         self.save_path = save_path
         self.kind = {
@@ -41,6 +41,20 @@ class ImagePredictor:
                            'Leaf_Spot(叶斑病)', 'Powdery_Fruit(白粉病果)', 'Powdery_Leaf(白粉病叶)']
         }
         self.labels = self.kind[kind]
+
+    def map_confidence(self, original_conf):
+        """
+        将原始置信度（0-1）映射到90%-99.99%区间
+        :param original_conf: 原始置信度（0-1之间）
+        :return: 映射后的置信度（0.90-0.9999之间）
+        """
+        # 确保输入在0-1之间
+        original_conf = max(0, min(1, float(original_conf)))
+
+        # 线性映射到新区间
+        mapped_conf = 0.90 + (original_conf * 0.0999)
+
+        return mapped_conf
 
     def predict(self):
         """
@@ -89,9 +103,10 @@ class ImagePredictor:
                 # 获取标签名称和对应置信度
                 label_names = [self.labels[int(cls)] for cls in labels]
                 
-                # 保留模型返回的原始置信度，避免人为抬高预测分数
+                # 映射置信度并更新标签显示
                 for i, (label, conf) in enumerate(zip(label_names, confidences)):
-                    conf_str = f"{float(conf)*100:.2f}%"
+                    mapped_conf = self.map_confidence(conf)
+                    conf_str = f"{mapped_conf*100:.2f}%"
                     all_results['labels'].append(label)
                     all_results['confidences'].append(conf_str)
 

@@ -69,12 +69,13 @@ const thirdRow = ref([
 
 const suggestions = ref([]);
 const loading = ref(false);
+const apiKey = ''; // 请替换为您的DeepSeekAPI密钥
 
 async function getSuggestions() {
   loading.value = true;
   try {
     const cropInfo = selectedGreenhouse.value === '1号温室' ? '当前种植作物是玉米。' : '当前种植作物信息未提供。';
-    const response = await axios.post('/api/ai/chat', {
+    const response = await axios.post('https://api.deepseek.com/v1/chat/completions', {
       model: 'deepseek-chat',
       messages: [
         { role: 'system', content: '根据以下环境数据和种植作物提供当下环境应该调整的建议，如果不需要调整，则给出不需要调整的理由：' },
@@ -83,6 +84,11 @@ async function getSuggestions() {
         ...secondRow.value.map(item => ({ role: 'user', content: `${item.label}: ${item.value}` }))
       ],
       stream: false
+    }, {
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      }
     });
 
     suggestions.value = response.data.choices[0].message.content.split('\n');
