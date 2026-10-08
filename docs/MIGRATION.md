@@ -15,4 +15,4 @@ All relative paths *within* each service are left unchanged. Start the services 
 
 Existing clone users can `git pull` and update scripts and working directories. The original commits remain available in Git history. The repository itself is still under the original GitHub URL until an administrator renames it.
 
-The existing `测试图片/` folder, tracked IDE files, model weights and uploaded media are retained for now because removing or relocating them requires separate validation and redistribution/license review. **This migration does not prove that full image/video inference works.**
+In a follow-up hygiene change, `测试图片/` was moved to `assets/samples/` without changing image contents. Tracked IDE settings and Python bytecode caches were removed from the current tree. Model weights and uploaded media remain untouched. Review third-party sample-image redistribution terms separately. **This migration does not prove that full image/video inference works.**
