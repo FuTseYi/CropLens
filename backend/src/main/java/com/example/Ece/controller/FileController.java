@@ -8,6 +8,8 @@ import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import com.example.Ece.common.Result;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -34,13 +36,13 @@ public class FileController {
 
     static String normalizeUploadName(String original) {
         if (original == null) {
-            throw new IllegalArgumentException("Missing file name");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing file name");
         }
         String portable = original.replace('\\', '/');
         String name = portable.substring(portable.lastIndexOf('/') + 1).trim();
         if (name.isEmpty() || ".".equals(name) || "..".equals(name)
                 || name.length() > 180 || name.chars().anyMatch(c -> c < 32 || c == 127)) {
-            throw new IllegalArgumentException("Invalid file name");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid file name");
         }
         return name;
     }
@@ -49,7 +51,7 @@ public class FileController {
         String stored = IdUtil.fastSimpleUUID() + "_" + normalizeUploadName(file.getOriginalFilename());
         Path destination = UPLOAD_ROOT.resolve(stored).normalize();
         if (!UPLOAD_ROOT.equals(destination.getParent())) {
-            throw new IllegalArgumentException("Invalid upload path");
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid upload path");
         }
         Files.createDirectories(UPLOAD_ROOT);
         try (InputStream stream = file.getInputStream()) {
