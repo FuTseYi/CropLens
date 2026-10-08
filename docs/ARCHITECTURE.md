@@ -26,7 +26,8 @@ The service endpoints and credentials must be checked in their respective config
 - Audit configuration files for credentials and sample values before publishing more setup examples.
 - Keep service-local relative paths valid after the top-level module rename; the files inside each service have not been reorganized.
 - Keep existing model weights accessible until inference paths have been tested.
-- Keep training assets and runtime-generated uploads distinct from static demonstration samples.\n- Confirm dataset redistribution terms before republishing external images.
+- Keep training assets and runtime-generated uploads distinct from static demonstration samples.
+- Confirm dataset redistribution terms before republishing external images.
 
 **DeepSeek runtime role:** Three Vue pages request text suggestions / chat through Spring Boot's optional local-only relay. YOLO remains the disease-detection inference engine. See [DEEPSEEK.md](DEEPSEEK.md).
 
