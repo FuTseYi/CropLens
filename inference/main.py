@@ -6,18 +6,15 @@ import requests
 from flask import Flask, Response, request
 from ultralytics import YOLO
 from predict import predictImg
-from input_validation import resolve_weight_file, validate_local_media_url
-from image_requests import process_image
-from socket_policy import LOCAL_VITE_ORIGINS
 from flask_socketio import SocketIO, emit
 
 
 # Flask 应用设置
 class VideoProcessingApp:
-    def __init__(self, host='127.0.0.1', port=5000):
+    def __init__(self, host='0.0.0.0', port=5000):
         """初始化 Flask 应用并设置路由"""
         self.app = Flask(__name__)
-        self.socketio = SocketIO(self.app, cors_allowed_origins=list(LOCAL_VITE_ORIGINS))
+        self.socketio = SocketIO(self.app, cors_allowed_origins="*")  # 初始化 SocketIO
         self.host = host
         self.port = port
         self.setup_routes()
@@ -59,36 +56,39 @@ class VideoProcessingApp:
 
     def predictImg(self):
         """图片预测接口"""
-        data = request.get_json(silent=True)
-        if not isinstance(data, dict):
-            return json.dumps({"status": 400, "message": "JSON 对象无效"}, ensure_ascii=False), 400
-        try:
-            weight_path = resolve_weight_file(data.get("weight"))
-            validate_local_media_url(data.get("inputImg"))
-            threshold = float(data.get("conf"))
-            if not 0 <= threshold <= 1:
-                raise ValueError("Invalid confidence threshold")
-            if data.get("kind") not in ("corn", "rice", "wheat", "potato", "tomato",
-                                        "cotton", "apple", "grape", "strawberry"):
-                raise ValueError("Invalid crop type")
-        except (ValueError, TypeError):
-            return json.dumps({"status": 400, "message": "无效的模型、图片地址或预测参数"}, ensure_ascii=False), 400
-        response = process_image(
-            data=data,
-            weight_path=weight_path,
-            threshold=threshold,
-            predictor_class=predictImg.ImagePredictor,
-            upload=self.upload,
-        )
-        return json.dumps(response, ensure_ascii=False)
+        data = request.get_json()
+        print(data)
+        self.data.clear()
+        self.data.update({
+            "username": data['username'], "weight": data['weight'],
+            "conf": data['conf'], "startTime": data['startTime'],
+            "inputImg": data['inputImg'],
+            "kind": data['kind']
+        })
+        print(self.data)
+        predict = predictImg.ImagePredictor(weights_path=f'./weights/{self.data["weight"]}',
+                                            img_path=self.data["inputImg"], save_path='./runs/result.jpg', kind=self.data["kind"],
+                                            conf=float(self.data["conf"]))
+        # 执行预测
+        results = predict.predict()
+        uploadedUrl = self.upload('./runs/result.jpg')
+        if results['labels'] != '预测失败':
+            self.data["status"] = 200
+            self.data["message"] = "预测成功"
+            self.data["outImg"] = uploadedUrl
+            self.data["allTime"] = results['allTime']
+            self.data["confidence"] = json.dumps(results['confidences'])
+            self.data["label"] = json.dumps(results['labels'])
+        else:
+            self.data["status"] = 400
+            self.data["message"] = "该图片无法识别，请重新上传！"
+        path = self.data["inputImg"].split('/')[-1]
+        if os.path.exists('./' + path):
+            os.remove('./' + path)
+        return json.dumps(self.data, ensure_ascii=False)
 
     def predictVideo(self):
         """视频流处理接口"""
-        try:
-            weight_path = resolve_weight_file(request.args.get("weight"))
-            validate_local_media_url(request.args.get("inputVideo"))
-        except ValueError:
-            return json.dumps({"status": 400, "message": "无效的视频地址或模型"}, ensure_ascii=False), 400
         self.data.clear()
         self.data.update({
             "username": request.args.get('username'), "weight": request.args.get('weight'),
@@ -96,10 +96,7 @@ class VideoProcessingApp:
             "inputVideo": request.args.get('inputVideo'),
             "kind": request.args.get('kind')
         })
-        try:
-            self.download(self.data["inputVideo"], self.paths['download'])
-        except (ValueError, requests.RequestException):
-            return json.dumps({"status": 400, "message": "本地视频下载失败"}, ensure_ascii=False), 400
+        self.download(self.data["inputVideo"], self.paths['download'])
         cap = cv2.VideoCapture(self.paths['download'])
         if not cap.isOpened():
             raise ValueError("无法打开视频文件")
@@ -113,7 +110,7 @@ class VideoProcessingApp:
             fps,
             (640, 480)
         )
-        model = YOLO(weight_path)
+        model = YOLO(f'./weights/{self.data["weight"]}')
 
         def generate():
             try:
@@ -141,10 +138,6 @@ class VideoProcessingApp:
 
     def predictCamera(self):
         """摄像头视频流处理接口"""
-        try:
-            weight_path = resolve_weight_file(request.args.get("weight"))
-        except ValueError:
-            return json.dumps({"status": 400, "message": "无效的模型文件"}, ensure_ascii=False), 400
         self.data.clear()
         self.data.update({
             "username": request.args.get('username'), "weight": request.args.get('weight'),
@@ -152,7 +145,7 @@ class VideoProcessingApp:
             "conf": request.args.get('conf'), "startTime": request.args.get('startTime')
         })
         self.socketio.emit('message', {'data': '正在加载，请稍等！'})
-        model = YOLO(weight_path)
+        model = YOLO(f'./weights/{self.data["weight"]}')
         cap = cv2.VideoCapture(0)
         cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
         cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
@@ -258,28 +251,17 @@ class VideoProcessingApp:
 
     def download(self, url, save_path):
         """下载文件并保存到指定路径"""
-        validate_local_media_url(url)
         os.makedirs(os.path.dirname(save_path), exist_ok=True)
-        max_bytes = 500 * 1024 * 1024
         try:
-            # Never follow redirects: a compromised upload endpoint must not
-            # turn a localhost-only media fetch into a request to another host.
-            with requests.get(url, stream=True, allow_redirects=False, timeout=(5, 60)) as response:
-                if response.status_code != 200:
-                    raise ValueError("Unexpected local media response")
-                size = 0
+            with requests.get(url, stream=True) as response:
+                response.raise_for_status()
                 with open(save_path, 'wb') as file:
                     for chunk in response.iter_content(chunk_size=8192):
                         if chunk:
-                            size += len(chunk)
-                            if size > max_bytes:
-                                raise ValueError("Video exceeds the configured size limit")
                             file.write(chunk)
             print(f"文件已成功下载并保存到 {save_path}")
-        except (requests.RequestException, ValueError):
-            if os.path.exists(save_path):
-                os.remove(save_path)
-            raise
+        except requests.RequestException as e:
+            print(f"下载失败: {e}")
 
     def cleanup_files(self, file_paths):
         """清理文件"""

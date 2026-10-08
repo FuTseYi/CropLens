@@ -8,17 +8,12 @@ import cn.hutool.json.JSONArray;
 import cn.hutool.json.JSONObject;
 import com.example.Ece.common.Result;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLEncoder;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
@@ -32,34 +27,6 @@ public class FileController {
 
     private static final String UPLOAD_DIR = "files";
     private static final String BASE_DIR = System.getProperty("user.dir");
-    private static final Path UPLOAD_ROOT = Paths.get(BASE_DIR, UPLOAD_DIR).toAbsolutePath().normalize();
-
-    static String normalizeUploadName(String original) {
-        if (original == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Missing file name");
-        }
-        String portable = original.replace('\\', '/');
-        String name = portable.substring(portable.lastIndexOf('/') + 1).trim();
-        if (name.isEmpty() || ".".equals(name) || "..".equals(name)
-                || name.length() > 180 || name.chars().anyMatch(c -> c < 32 || c == 127)) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid file name");
-        }
-        return name;
-    }
-
-    private static String saveUpload(MultipartFile file) throws IOException {
-        String stored = IdUtil.fastSimpleUUID() + "_" + normalizeUploadName(file.getOriginalFilename());
-        Path destination = UPLOAD_ROOT.resolve(stored).normalize();
-        if (!UPLOAD_ROOT.equals(destination.getParent())) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid upload path");
-        }
-        Files.createDirectories(UPLOAD_ROOT);
-        try (InputStream stream = file.getInputStream()) {
-            Files.copy(stream, destination);
-        }
-        return stored;
-    }
-
 
     /**
      * 上传接口
@@ -69,9 +36,18 @@ public class FileController {
      */
     @PostMapping("/upload")
     public Result<?> upload(MultipartFile file) throws IOException {
-        String stored = saveUpload(file);
-        String fileUrl = "http://" + ip + ":" + port + "/files/"
-                + URLEncoder.encode(stored, "UTF-8").replace("+", "%20");
+        String originalFilename = file.getOriginalFilename();  // 获取源文件的名称
+        // 定义文件的唯一标识（前缀）
+        String flag = IdUtil.fastSimpleUUID();
+        String rootFilePath = BASE_DIR + File.separator + UPLOAD_DIR + File.separator + flag + "_" + originalFilename;  // 获取上传的路径
+        File saveFile = new File(rootFilePath);
+        if (!saveFile.getParentFile().exists()) {
+            saveFile.getParentFile().mkdirs();
+        }
+        FileUtil.writeBytes(file.getBytes(), rootFilePath);  // 把文件写入到上传的路径
+
+        // 返回完整的 URL 地址，用于浏览器访问
+        String fileUrl = "http://" + ip + ":" + port + "/files/" + flag + "_" + originalFilename;
         return Result.success(fileUrl);  // 返回文件的完整 URL 地址
     }
 
@@ -83,9 +59,16 @@ public class FileController {
      */
     @PostMapping("/editor/upload")
     public JSON editorUpload(MultipartFile file) throws IOException {
-        String stored = saveUpload(file);
-        String uuid = stored.substring(0, stored.indexOf('_'));
-        String url = "http://" + ip + ":" + port + "/files/" + uuid;
+        String originalFilename = file.getOriginalFilename();  // 获取源文件的名称
+        // 定义文件的唯一标识（前缀）
+        String flag = IdUtil.fastSimpleUUID();
+        String rootFilePath = BASE_DIR + File.separator + UPLOAD_DIR + File.separator + flag + "_" + originalFilename;  // 获取上传的路径
+        File saveFile = new File(rootFilePath);
+        if (!saveFile.getParentFile().exists()) {
+            saveFile.getParentFile().mkdirs();
+        }
+        FileUtil.writeBytes(file.getBytes(), rootFilePath);  // 把文件写入到上传的路径
+        String url = "http://" + ip + ":" + port + "/files/" + flag;
         JSONObject json = new JSONObject();
         json.set("errno", 0);
         JSONArray arr = new JSONArray();
@@ -110,7 +93,7 @@ public class FileController {
             dir.mkdirs();
         }
         List<String> fileNames = FileUtil.listFileNames(basePath);  // 获取所有的文件名称
-        String fileName = fileNames.stream().filter(name -> name.equals(flag) || name.startsWith(flag + "_")).findAny().orElse("");  // 找到跟参数一致的文件
+        String fileName = fileNames.stream().filter(name -> name.contains(flag)).findAny().orElse("");  // 找到跟参数一致的文件
         try {
             if (StrUtil.isNotEmpty(fileName)) {
                 response.addHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
@@ -126,3 +109,110 @@ public class FileController {
         }
     }
 }
+//package com.example.Ece.controller;
+//
+//import cn.hutool.core.io.FileUtil;
+//import cn.hutool.core.util.IdUtil;
+//import cn.hutool.core.util.StrUtil;
+//import cn.hutool.json.JSON;
+//import cn.hutool.json.JSONArray;
+//import cn.hutool.json.JSONObject;
+//import com.example.Ece.common.Result;
+//import org.springframework.beans.factory.annotation.Value;
+//import org.springframework.web.bind.annotation.*;
+//import org.springframework.web.multipart.MultipartFile;
+//
+//import javax.servlet.http.HttpServletResponse;
+//import java.io.*;
+//import java.net.URLEncoder;
+//import java.util.List;
+//
+//@RestController
+//@RequestMapping("/files")
+//public class FileController {
+//    @Value("${server.port}")
+//    private String port;
+//
+//    @Value("${file.ip}")
+//    private String ip;
+//
+//
+//    /**
+//     * 上传接口
+//     * @param file
+//     * @return
+//     * @throws IOException
+//     */
+//    @PostMapping("/upload")
+//    public Result<?> upload(MultipartFile file) throws IOException {
+//        String originalFilename = file.getOriginalFilename();  // 获取源文件的名称
+//        // 定义文件的唯一标识（前缀）
+//        String flag = IdUtil.fastSimpleUUID();
+//        String rootFilePath = System.getProperty("user.dir") + "/files/" + flag + "_" + originalFilename;  // 获取上传的路径
+//        File saveFile = new File(rootFilePath);
+//        if (!saveFile.getParentFile().exists()) {
+//            saveFile.getParentFile().mkdirs();
+//        }
+//        FileUtil.writeBytes(file.getBytes(), rootFilePath);  // 把文件写入到上传的路径
+//
+//        // 返回完整的 URL 地址，用于浏览器访问
+//        String fileUrl = "http://" + ip + ":" + port + "/files/" + flag + "_" + originalFilename;
+//        return Result.success(fileUrl);  // 返回文件的完整 URL 地址
+//    }
+//
+//
+//
+//    /**
+//     * 富文本文件上传接口
+//     * @param file
+//     * @return
+//     * @throws IOException
+//     */
+//    @PostMapping("/editor/upload")
+//    public JSON editorUpload(MultipartFile file) throws IOException {
+//        String originalFilename = file.getOriginalFilename();  // 获取源文件的名称
+//        // 定义文件的唯一标识（前缀）
+//        String flag = IdUtil.fastSimpleUUID();
+//        String rootFilePath = System.getProperty("user.dir") + "/files/" + flag + "_" + originalFilename;  // 获取上传的路径
+//        File saveFile = new File(rootFilePath);
+//        if (!saveFile.getParentFile().exists()) {
+//            saveFile.getParentFile().mkdirs();
+//        }
+//        FileUtil.writeBytes(file.getBytes(), rootFilePath);  // 把文件写入到上传的路径
+//        String url = "http://" + ip + ":" + port + "/files/" + flag;
+//        JSONObject json = new JSONObject();
+//        json.set("errno", 0);
+//        JSONArray arr = new JSONArray();
+//        JSONObject data = new JSONObject();
+//        arr.add(data);
+//        data.set("url", url);
+//        json.set("data", arr);
+//        return json;  // 返回结果 url
+//    }
+//
+//    /**
+//     * 下载接口
+//     * @param flag
+//     * @param response
+//     */
+//    @GetMapping("/{flag}")
+//    public void getFiles(@PathVariable String flag, HttpServletResponse response) {
+//        OutputStream os;  // 新建一个输出流对象
+//        String basePath = System.getProperty("user.dir") + "/files/";  // 定于文件上传的根路径
+//        List<String> fileNames = FileUtil.listFileNames(basePath);  // 获取所有的文件名称
+//        String fileName = fileNames.stream().filter(name -> name.contains(flag)).findAny().orElse("");  // 找到跟参数一致的文件
+//        try {
+//            if (StrUtil.isNotEmpty(fileName)) {
+//                response.addHeader("Content-Disposition", "attachment;filename=" + URLEncoder.encode(fileName, "UTF-8"));
+//                response.setContentType("application/octet-stream");
+//                byte[] bytes = FileUtil.readBytes(basePath + fileName);  // 通过文件的路径读取文件字节流
+//                os = response.getOutputStream();   // 通过输出流返回文件
+//                os.write(bytes);
+//                os.flush();
+//                os.close();
+//            }
+//        } catch (Exception e) {
+//            System.out.println("文件下载失败");
+//        }
+//    }
+//}

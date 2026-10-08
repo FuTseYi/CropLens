@@ -77,7 +77,8 @@
 		  '农药使用注意事项有哪些？',
 		  '农作物施肥的最佳时间？',
 		  '如何识别植物病害症状？'
-		]
+		],
+		apiKey: '' // 请替换为您的DeepSeekAPI密钥
 	  }
 	},
 	methods: {
@@ -98,7 +99,7 @@
 		this.loading = true
   
 		try {
-		  const response = await axios.post('/api/ai/chat', {
+		  const response = await axios.post('https://api.deepseek.com/v1/chat/completions', {
 			model: 'deepseek-chat',
 			messages: [
 			  ...this.messages.map(msg => ({
@@ -107,6 +108,11 @@
 			  }))
 			],
 			stream: false
+		  }, {
+			headers: {
+			  'Authorization': `Bearer ${this.apiKey}`,
+			  'Content-Type': 'application/json'
+			}
 		  })
   
 		  this.messages.push({
