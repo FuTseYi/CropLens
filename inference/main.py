@@ -7,6 +7,7 @@ from flask import Flask, Response, request
 from ultralytics import YOLO
 from predict import predictImg
 from input_validation import resolve_weight_file, validate_local_media_url
+from image_requests import process_image
 from flask_socketio import SocketIO, emit
 
 
@@ -71,34 +72,14 @@ class VideoProcessingApp:
                 raise ValueError("Invalid crop type")
         except (ValueError, TypeError):
             return json.dumps({"status": 400, "message": "无效的模型、图片地址或预测参数"}, ensure_ascii=False), 400
-        self.data.clear()
-        self.data.update({
-            "username": data['username'], "weight": data['weight'],
-            "conf": data['conf'], "startTime": data['startTime'],
-            "inputImg": data['inputImg'],
-            "kind": data['kind']
-        })
-        print(self.data)
-        predict = predictImg.ImagePredictor(weights_path=weight_path,
-                                            img_path=self.data["inputImg"], save_path='./runs/result.jpg', kind=self.data["kind"],
-                                            conf=threshold)
-        # 执行预测
-        results = predict.predict()
-        uploadedUrl = self.upload('./runs/result.jpg')
-        if results['labels'] != '预测失败':
-            self.data["status"] = 200
-            self.data["message"] = "预测成功"
-            self.data["outImg"] = uploadedUrl
-            self.data["allTime"] = results['allTime']
-            self.data["confidence"] = json.dumps(results['confidences'])
-            self.data["label"] = json.dumps(results['labels'])
-        else:
-            self.data["status"] = 400
-            self.data["message"] = "该图片无法识别，请重新上传！"
-        path = self.data["inputImg"].split('/')[-1]
-        if os.path.exists('./' + path):
-            os.remove('./' + path)
-        return json.dumps(self.data, ensure_ascii=False)
+        response = process_image(
+            data=data,
+            weight_path=weight_path,
+            threshold=threshold,
+            predictor_class=predictImg.ImagePredictor,
+            upload=self.upload,
+        )
+        return json.dumps(response, ensure_ascii=False)
 
     def predictVideo(self):
         """视频流处理接口"""
