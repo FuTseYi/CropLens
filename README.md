@@ -1,62 +1,42 @@
 
 # CropLens
 
-**YOLO detection + optional DeepSeek-powered advice** · Vue 3 · Spring Boot · Flask
-
-[![Build verification](https://github.com/FuTseYi/CropLens/actions/workflows/build-check.yml/badge.svg)](https://github.com/FuTseYi/CropLens/actions/workflows/build-check.yml)
-[![Inference regression](https://github.com/FuTseYi/CropLens/actions/workflows/inference-tests.yml/badge.svg)](https://github.com/FuTseYi/CropLens/actions/workflows/inference-tests.yml)
-[![Real YOLO CPU smoke](https://github.com/FuTseYi/CropLens/actions/workflows/real-yolo-smoke.yml/badge.svg)](https://github.com/FuTseYi/CropLens/actions/workflows/real-yolo-smoke.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
 [![Vue.js](https://img.shields.io/badge/Vue.js-3.x-brightgreen.svg)](https://vuejs.org/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-2.3.7-lightgrey.svg)](https://spring.io/projects/spring-boot)
 
-[简体中文](./README_zh-CN.md)
+[中文](./README_zh-CN.md)
 
 ---
 
-## Project layout
+![Star History Chart](https://api.star-history.com/svg?repos=FuTseYi/YOLO_DeepSeek_Powered_CropDisease_Detection&type=Date)
 
-```text
-frontend/      Vue 3 + Vite web interface
-backend/       Spring Boot API + optional local DeepSeek relay
-inference/     Flask + YOLO image/video inference
-database/      SQL schema
-assets/samples/ Sample images for demonstrations
-docs/          Configuration and design notes
-```
+### 1. Project Overview
 
-See [architecture](docs/ARCHITECTURE.md) and [migration notes](docs/MIGRATION.md).
+This project is an intelligent crop disease detection system that leverages the powerful **YOLO (You Only Look Once)** algorithm for real-time object detection. It is built with a modern, decoupled, full-stack architecture, assisted by the **DeepSeek** AI model for code generation and project insights. The system provides an end-to-end solution for identifying crop diseases from images, videos, and live camera feeds, aiming to offer an efficient and accurate tool for agricultural producers and researchers.
 
-## Overview
+### 2. Core Features
 
-**CropLens** is an intelligent crop disease detection platform that leverages the **YOLO (You Only Look Once)** object detection models for real-time object detection. It is built with a modern, decoupled, full-stack architecture, with optional **DeepSeek** chat and agronomic text recommendations routed through a local-only Spring Boot endpoint. The system provides an end-to-end solution for identifying crop diseases from images, videos, and live camera feeds, providing a reference implementation for agricultural producers and researchers.
-
-## Features
-
-- **Optional AI Assistant**: DeepSeek provides text suggestions and chat in three interface views; the feature is disabled by default until locally configured. [Setup & security](docs/DEEPSEEK.md).
 - **Multi-source Detection**: Supports disease detection from static images, video files, and real-time camera streams.
-- **Separated Services**: Flask handles model inference; Spring Boot handles application APIs and data management.
+- **High-Performance Backend**: A microservices architecture featuring a **Flask** server for handling AI model inferences and a **Spring Boot** server for business logic, data management, and user interactions.
 - **Modern Frontend**: A responsive and user-friendly web interface built with **Vue 3**, **Vite**, and **Element Plus**.
 - **Real-time Communication**: Utilizes **WebSocket** for instant feedback during video processing and **ECharts** for rich data visualization of detection results.
 - **Scalable & Decoupled**: The clear separation of frontend, business logic, and AI services allows for independent development, scaling, and maintenance.
 
-## Tech stack
+### 3. Technology Stack
 
 - **Frontend**: `Vue 3`, `Vite`, `Element Plus`, `Axios`, `ECharts`, `Socket.io-client`
 - **Backend (Business Logic)**: `Java 1.8`, `Spring Boot`, `MyBatis-Plus`, `MySQL/MariaDB`, `Maven`
-- **LLM Advice (Optional)**: `DeepSeek Chat` via opt-in, server-side Spring Boot relay; no API key in the Vue bundle.
 - **Backend (AI Model)**: `Python`, `Flask`, `Ultralytics (YOLO)`, `OpenCV`, `Flask-SocketIO`
 
-## Use cases
+### 4. Application Scenarios
 
-- **Smart Agriculture**: Demonstrates image-based crop disease identification; decisions should be verified by qualified agronomy experts.
+- **Smart Agriculture**: Assists farmers in quickly identifying crop diseases for timely intervention.
 - **Agricultural Research**: Provides researchers with a tool for automated data collection and analysis of plant pathology.
 - **Educational Tool**: Serves as a comprehensive full-stack project for developers to learn about integrating AI models with web applications.
 
-**Local demo boundary:** Upload images/videos through the local Spring Boot service before inference; arbitrary remote URLs and model paths are not accepted. See [configuration](docs/CONFIGURATION.md).
-
-## Quick start
+### 5. Installation and Quick Start
 
 **Prerequisites:**
 - `Node.js` >= 16.0
@@ -68,7 +48,7 @@ See [architecture](docs/ARCHITECTURE.md) and [migration notes](docs/MIGRATION.md
 **Backend Setup (Spring Boot):**
 1. Navigate to the `backend` directory.
 2. Create a database and import the `database/schema.sql` file.
-3. Set `DB_PASSWORD` (and optionally `DB_USERNAME`) in your environment; see [configuration guidance](docs/CONFIGURATION.md).
+3. Modify the database connection settings in `src/main/resources/application.properties`.
 4. Run the application:
    ```shell
    mvn spring-boot:run
@@ -78,10 +58,10 @@ See [architecture](docs/ARCHITECTURE.md) and [migration notes](docs/MIGRATION.md
 1. Navigate to the `inference` directory.
 2. Install Python dependencies:
    ```shell
-   python -m pip install -r requirements.txt
+   pip install -r requirements.txt
    ```
-   *(Dependency versions have not yet been validated; see [configuration guidance](docs/CONFIGURATION.md).)*
-3. Existing crop-specific weights are in `weights/` and `yolo11n.pt` is at the inference directory root; refer to [configuration](docs/CONFIGURATION.md) before replacing model files.
+   *(Note: A `requirements.txt` file should be created with libraries like `ultralytics`, `flask`, `opencv-python`, `requests`, `flask-socketio`)*
+3. Download the pre-trained YOLO model weights (e.g., `yolo11n.pt`) and place them in the `weights` folder.
 4. Run the AI service:
    ```shell
    python main.py
@@ -91,33 +71,23 @@ See [architecture](docs/ARCHITECTURE.md) and [migration notes](docs/MIGRATION.md
 1. Navigate to the `frontend` directory.
 2. Install dependencies:
    ```shell
-   npm ci
+   npm install
    ```
 3. Start the development server:
    ```shell
    npm run dev
    ```
-4. Access the application at the address provided (typically `http://localhost:8100`).
+4. Access the application at the address provided (e.g., `http://localhost:3000`).
 
-## Testing
+### 6. Contribution
 
-**Real checkpoint validation:** All nine bundled crop models successfully processed one corresponding sample each on a GitHub-hosted CPU on October 8, 2026. [Review the recorded test evidence and limitations](docs/VERIFICATION-2026-10-08.md). This is not a measurement of prediction accuracy.
-
-Regular pull requests run the lightweight CI checks. An optional manual workflow can run **one real YOLO checkpoint on a sample image using CPU**; see [testing and limitations](docs/TESTING.md). Its results must be checked separately before claiming any real inference validation.
-
-## Contributing
-
-Read [CONTRIBUTING.md](CONTRIBUTING.md) before proposing changes. Contributions are welcome! Please feel free to submit a Pull Request or open an Issue to report bugs or suggest new features.
+Contributions are welcome! Please feel free to submit a Pull Request or open an Issue to report bugs or suggest new features.
 1. Fork the repository.
 2. Create your feature branch (`git checkout -b feature/AmazingFeature`).
 3. Commit your changes (`git commit -m 'Add some AmazingFeature'`).
 4. Push to the branch (`git push origin feature/AmazingFeature`).
 5. Open a Pull Request.
 
-## License
+### 7. License
 
 This project is licensed under the **MIT License**. See the `LICENSE` file for details.
-
-**Security:** This is a local educational prototype, not a publicly hardened service. See [SECURITY.md](SECURITY.md) and [configuration](docs/CONFIGURATION.md).
-
-**File storage note:** Uploaded media is stored locally under `backend/files/` with generated identifiers. New uploads sanitize client-supplied filenames; uploaded content is **not** malware-scanned or suitable for unrestricted public deployment. See [configuration](docs/CONFIGURATION.md).
