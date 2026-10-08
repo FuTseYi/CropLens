@@ -5,6 +5,7 @@
 
 [![Build verification](https://github.com/FuTseYi/CropLens/actions/workflows/build-check.yml/badge.svg)](https://github.com/FuTseYi/CropLens/actions/workflows/build-check.yml)
 [![Inference regression](https://github.com/FuTseYi/CropLens/actions/workflows/inference-tests.yml/badge.svg)](https://github.com/FuTseYi/CropLens/actions/workflows/inference-tests.yml)
+[![Real YOLO CPU smoke](https://github.com/FuTseYi/CropLens/actions/workflows/real-yolo-smoke.yml/badge.svg)](https://github.com/FuTseYi/CropLens/actions/workflows/real-yolo-smoke.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
 [![Vue.js](https://img.shields.io/badge/Vue.js-3.x-brightgreen.svg)](https://vuejs.org/)
@@ -99,6 +100,8 @@ See [architecture](docs/ARCHITECTURE.md) and [migration notes](docs/MIGRATION.md
 4. Access the application at the address provided (typically `http://localhost:8100`).
 
 ## Testing
+
+**Real checkpoint validation:** All nine bundled crop models successfully processed one corresponding sample each on a GitHub-hosted CPU on October 8, 2026. [Review the recorded test evidence and limitations](docs/VERIFICATION-2026-10-08.md). This is not a measurement of prediction accuracy.
 
 Regular pull requests run the lightweight CI checks. An optional manual workflow can run **one real YOLO checkpoint on a sample image using CPU**; see [testing and limitations](docs/TESTING.md). Its results must be checked separately before claiming any real inference validation.
 
