@@ -47,3 +47,9 @@ DeepSeek is used at runtime by the image advice, smart chat and greenhouse advic
 ## Image confidence
 
 The prediction threshold now respects the UI slider, and the returned confidence percentage is the YOLO model's raw confidence rather than an artificially increased value. Verify the detector using a representative sample set before claiming accuracy metrics.
+
+## Inference upload and model validation
+
+The Flask service now accepts only model filenames already present in `inference/weights/`, and restricts image/video source URLs to its companion Spring Boot upload endpoint at `http://localhost:9999/files/<uploaded-file>` (or `127.0.0.1`). Arbitrary external image/video URLs, file paths and model names are rejected. To analyze a new image or video, first upload it through the application's local file-upload flow. Video downloads do not follow redirects and are limited to 500 MiB.
+
+This intentionally changes the previous ability to pass arbitrary remote URLs. The validation does **not** add user authentication or make the demo safe to expose on the public Internet. Source-file distribution, upload authentication, per-session inference state, and full end-to-end model evaluation remain follow-up work.

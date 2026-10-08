@@ -51,6 +51,8 @@ See [architecture](docs/ARCHITECTURE.md) and [migration notes](docs/MIGRATION.md
 - **Agricultural Research**: Provides researchers with a tool for automated data collection and analysis of plant pathology.
 - **Educational Tool**: Serves as a comprehensive full-stack project for developers to learn about integrating AI models with web applications.
 
+**Local demo boundary:** Upload images/videos through the local Spring Boot service before inference; arbitrary remote URLs and model paths are not accepted. See [configuration](docs/CONFIGURATION.md).
+
 ## Quick start
 
 **Prerequisites:**
