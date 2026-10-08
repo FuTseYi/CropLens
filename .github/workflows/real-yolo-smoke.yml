@@ -15,7 +15,7 @@ permissions:
   contents: read
 
 jobs:
-  wheat-sample:
+  all-crop-samples:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
@@ -27,5 +27,5 @@ jobs:
         run: python -m pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
       - name: Install Ultralytics
         run: python -m pip install ultralytics
-      - name: Run a real sample prediction on CPU
+      - name: Run real crop checkpoints on CPU
         run: python inference/tests/smoke_real_model.py
