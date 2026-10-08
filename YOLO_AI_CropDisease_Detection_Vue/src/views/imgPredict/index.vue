@@ -269,8 +269,7 @@ const getAISuggestion = async () => {
 	
 	state.suggestionLoading = true;
 	try {
-		const apiKey = ''; // 请替换为您的DeepSeekAPI密钥
-		
+
 		// 构建更详细的提示信息
 		const prompt = `作为一个专业的农作物病害专家，请对以下情况进行详细分析：
 
@@ -297,18 +296,13 @@ const getAISuggestion = async () => {
 
 请用专业但易懂的语言回答，并尽可能提供具体的操作建议。`;
 
-const response = await axios.post('https://api.deepseek.com/v1/chat/completions', {
+const response = await axios.post('/api/ai/chat', {
 			model: 'deepseek-chat',
 			messages: [{
 				role: 'user',
 				content: prompt
 			}],
 			stream: false
-		}, {
-			headers: {
-				'Authorization': `Bearer ${apiKey}`,
-				'Content-Type': 'application/json'
-			}
 		});
 
 		state.aiSuggestion = response.data.choices[0].message.content;
