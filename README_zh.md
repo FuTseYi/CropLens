@@ -48,7 +48,7 @@
 **后端启动 (Spring Boot):**
 1. 进入 `YOLO_AI_CropDisease_Detection_SpringBoot` 目录。
 2. 创建数据库，并导入根目录下的 `cropdisease.sql` 文件。
-3. 修改 `src/main/resources/application.properties` 中的数据库连接信息。
+3. 设置环境变量 `DB_PASSWORD`（可选设置 `DB_USERNAME`），参见 [配置说明](docs/CONFIGURATION.md)。
 4. 运行应用：
    ```shell
    mvn spring-boot:run
@@ -58,9 +58,9 @@
 1. 进入 `YOLO_AI_CropDisease_Detection_Flask` 目录。
 2. 安装 Python 依赖：
    ```shell
-   pip install flask flask-socketio ultralytics opencv-python requests
+   python -m pip install -r requirements.txt
    ```
-   *(以上为根据现有技术栈整理的临时依赖安装方式，部署前仍需核对源码导入和版本。)*
+   *(依赖版本尚未完整验证，详见 [配置说明](docs/CONFIGURATION.md)。)*
 3. 下载预训练的 YOLO 模型权重文件 (如 `yolo11n.pt`) 并放入 `weights` 文件夹。
 4. 运行 AI 服务：
    ```shell
