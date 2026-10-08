@@ -108,3 +108,5 @@ Contributions are welcome! Please feel free to submit a Pull Request or open an 
 ## License
 
 This project is licensed under the **MIT License**. See the `LICENSE` file for details.
+
+**File storage note:** Uploaded media is stored locally under `backend/files/` with generated identifiers. New uploads sanitize client-supplied filenames; uploaded content is **not** malware-scanned or suitable for unrestricted public deployment. See [configuration](docs/CONFIGURATION.md).
