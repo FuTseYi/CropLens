@@ -39,3 +39,11 @@ npm run dev
 ```
 
 Review the Vite `.env.*` files and application API client URLs for the actual ports and hosts before deployment. Do not treat the sample values as production configuration.
+
+## DeepSeek text assistant (optional)
+
+DeepSeek is used at runtime by the image advice, smart chat and greenhouse advice views. Its paid API key belongs on the Spring Boot server, **not** in Vue code or a `VITE_` variable. The local-only relay is disabled by default; see [DEEPSEEK.md](DEEPSEEK.md) for controlled opt-in setup. Do not enable it on public deployments without authentication and rate limits.
+
+## Image confidence
+
+The prediction threshold now respects the UI slider, and the returned confidence percentage is the YOLO model's raw confidence rather than an artificially increased value. Verify the detector using a representative sample set before claiming accuracy metrics.
