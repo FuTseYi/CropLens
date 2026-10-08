@@ -23,9 +23,11 @@ const viteConfig = defineConfig((mode: ConfigEnv) => {
 			include: ['element-plus/lib/locale/lang/zh-cn', 'element-plus/lib/locale/lang/en', 'element-plus/lib/locale/lang/zh-tw'],
 		},
 		server: {
-			host: '0.0.0.0',
-			port: env.VITE_PORT as unknown as number,
-			open: env.VITE_OPEN,
+			// The local DeepSeek proxy must not be reachable through a LAN-exposed dev server.
+			host: env.VITE_HOST || '127.0.0.1',
+			port: Number(env.VITE_PORT) || 8100,
+			strictPort: true,
+			open: env.VITE_OPEN === 'true',
 			hmr: true,
 			proxy: {
 				'/api': {
