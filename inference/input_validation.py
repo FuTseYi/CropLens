@@ -46,7 +46,7 @@ def validate_local_media_url(url):
     ):
         raise ValueError("Only the local upload endpoint is supported")
     path = unquote(parsed.path)
-    filename = path.removeprefix("/files/")
+    filename = path[len("/files/"):] if path.startswith("/files/") else ""
     if (
         not parsed.path.startswith("/files/")
         or not filename
