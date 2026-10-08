@@ -13,6 +13,6 @@ The layout was normalized without rewriting service sources or model artifacts:
 
 All relative paths *within* each service are left unchanged. Start the services from their new directories (`frontend`, `backend`, `inference`) so relative model paths and uploaded files still resolve as intended. The Vite local proxy defaults to Spring Boot on port 9999 and Flask on port 5000.
 
-Existing clone users can `git pull` and update scripts and working directories. The original commits remain available in Git history. The repository itself is still under the original GitHub URL until an administrator renames it.
+Existing clone users can `git pull` and update scripts and working directories. The original commits remain available in Git history. The GitHub repository has since been renamed to [FuTseYi/CropLens](https://github.com/FuTseYi/CropLens). GitHub redirects the former repository URL, but users should update local remotes to the canonical URL with `git remote set-url origin https://github.com/FuTseYi/CropLens.git`.
 
 In a follow-up hygiene change, `测试图片/` was moved to `assets/samples/` without changing image contents. Tracked IDE settings and Python bytecode caches were removed from the current tree. Model weights and uploaded media remain untouched. Review third-party sample-image redistribution terms separately. **This migration does not prove that full image/video inference works.**
