@@ -29,8 +29,10 @@ class CheckpointValidationTests(unittest.TestCase):
                 resolve_weight_file(value, self.weights)
 
     def test_rejects_symlink_escaping_weights(self):
-        outside = self.weights.parent / "croplens-validation-outside.pt"
-        # Use an existing directory outside the temporary weights root.
+        outside_dir = tempfile.TemporaryDirectory()
+        self.addCleanup(outside_dir.cleanup)
+        outside = Path(outside_dir.name) / "real-model.pt"
+        outside.write_bytes(b"outside weights directory")
         try:
             (self.weights / "external.pt").symlink_to(outside)
         except (OSError, NotImplementedError):
