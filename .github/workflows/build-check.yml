@@ -35,4 +35,4 @@ jobs:
           java-version: '8'
           cache: maven
           cache-dependency-path: backend/pom.xml
-      - run: mvn --batch-mode --no-transfer-progress -DskipTests package
+      - run: mvn --batch-mode --no-transfer-progress -Dtest=DeepSeekControllerTest package
