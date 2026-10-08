@@ -2,7 +2,7 @@
 
 | Level | Command / workflow | What it verifies | What it does not verify |
 | --- | --- | --- | --- |
-| Python unit tests | `cd inference && python -m unittest discover -s tests -v` | Confidence handling, model path and local URL restrictions using mock objects | Actual trained model or image decoding |
+| Python unit tests | `cd inference && python -m unittest discover -s tests -v` | Confidence handling, model path and local URL restrictions, plus independent concurrent image request outputs using mock objects | Actual trained model or image decoding |
 | Vue build | `cd frontend && npm ci && npm run build` | The frontend bundle compiles | Browser integration or API responses |
 | Spring Boot checks | `cd backend && mvn -Dtest=DeepSeekControllerTest,FileControllerTest package` | Backend compilation, selected input/control tests | Database integration or paid AI connectivity |
 | Documentation links | `python scripts/check_docs_links.py` | Relative Markdown links resolve | External link availability |
@@ -23,4 +23,4 @@ The optional test installs CPU PyTorch/Ultralytics packages and may download sub
 
 ## Before claiming production readiness
 
-Run complete image/video/camera inference against the local Spring Boot upload/database flow, verify model-class mappings and nonempty/empty detections, profile CPU/GPU resource usage, test overlapping user sessions, audit upload authentication and content validation, and document the provenance/redistribution permissions of sample data and pretrained model assets.
+The image route now uses per-request output paths and no longer mutates shared video state; unit tests simulate overlapping image calls. This does not prove end-to-end concurrency or cover the still-shared video/camera state. Run complete image/video/camera inference against the local Spring Boot upload/database flow, verify model-class mappings and nonempty/empty detections, profile CPU/GPU resource usage, test overlapping user sessions, audit upload authentication and content validation, and document the provenance/redistribution permissions of sample data and pretrained model assets.
