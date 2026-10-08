@@ -114,7 +114,10 @@ class VideoProcessingApp:
             "inputVideo": request.args.get('inputVideo'),
             "kind": request.args.get('kind')
         })
-        self.download(self.data["inputVideo"], self.paths['download'])
+        try:
+            self.download(self.data["inputVideo"], self.paths['download'])
+        except (ValueError, requests.RequestException):
+            return json.dumps({"status": 400, "message": "本地视频下载失败"}, ensure_ascii=False), 400
         cap = cv2.VideoCapture(self.paths['download'])
         if not cap.isOpened():
             raise ValueError("无法打开视频文件")
@@ -273,17 +276,28 @@ class VideoProcessingApp:
 
     def download(self, url, save_path):
         """下载文件并保存到指定路径"""
+        validate_local_media_url(url)
         os.makedirs(os.path.dirname(save_path), exist_ok=True)
+        max_bytes = 500 * 1024 * 1024
         try:
-            with requests.get(url, stream=True) as response:
-                response.raise_for_status()
+            # Never follow redirects: a compromised upload endpoint must not
+            # turn a localhost-only media fetch into a request to another host.
+            with requests.get(url, stream=True, allow_redirects=False, timeout=(5, 60)) as response:
+                if response.status_code != 200:
+                    raise ValueError("Unexpected local media response")
+                size = 0
                 with open(save_path, 'wb') as file:
                     for chunk in response.iter_content(chunk_size=8192):
                         if chunk:
+                            size += len(chunk)
+                            if size > max_bytes:
+                                raise ValueError("Video exceeds the configured size limit")
                             file.write(chunk)
             print(f"文件已成功下载并保存到 {save_path}")
-        except requests.RequestException as e:
-            print(f"下载失败: {e}")
+        except (requests.RequestException, ValueError):
+            if os.path.exists(save_path):
+                os.remove(save_path)
+            raise
 
     def cleanup_files(self, file_paths):
         """清理文件"""
