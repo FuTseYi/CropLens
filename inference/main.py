@@ -11,7 +11,7 @@ from flask_socketio import SocketIO, emit
 
 # Flask 应用设置
 class VideoProcessingApp:
-    def __init__(self, host='0.0.0.0', port=5000):
+    def __init__(self, host='127.0.0.1', port=5000):
         """初始化 Flask 应用并设置路由"""
         self.app = Flask(__name__)
         self.socketio = SocketIO(self.app, cors_allowed_origins="*")  # 初始化 SocketIO
