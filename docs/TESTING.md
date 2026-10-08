@@ -8,6 +8,8 @@
 | Documentation links | `python scripts/check_docs_links.py` | Relative Markdown links resolve | External link availability |
 | **Real YOLO smoke test** | GitHub Actions: `Real YOLO CPU smoke test` | Loads all nine crop checkpoints and predicts one corresponding bundled JPG per crop on a GitHub-hosted CPU | Diagnostic accuracy, full application workflow, multi-user concurrency, camera/video streaming, disease classification accuracy |
 
+**Verified execution:** [2026-10-08 nine-checkpoint CPU smoke result](VERIFICATION-2026-10-08.md) — all nine model/sample pairs completed basic inference. This is a compatibility smoke result, not an accuracy benchmark.
+
 ## Run the real inference smoke test
 
 The workflow runs automatically on `main` when model checkpoints, its test script, or the smoke workflow are changed. It can also be triggered manually from an authenticated GitHub CLI terminal:
