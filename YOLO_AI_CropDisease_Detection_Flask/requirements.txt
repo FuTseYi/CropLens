@@ -1,0 +1,7 @@
+# Runtime dependencies for the Flask inference service
+# Versions are intentionally not pinned; reproduce a tested environment before deployment.
+Flask
+Flask-SocketIO
+ultralytics
+opencv-python
+requests

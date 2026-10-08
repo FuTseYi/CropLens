@@ -1,23 +1,26 @@
 
-# YOLO & DeepSeek Powered Crop Disease Detection System
+# CropLens
+
+**YOLO detection + optional DeepSeek-powered advice** · Vue 3 · Spring Boot · Flask
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
 [![Vue.js](https://img.shields.io/badge/Vue.js-3.x-brightgreen.svg)](https://vuejs.org/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-2.3.7-lightgrey.svg)](https://spring.io/projects/spring-boot)
 
-[中文](./README_zh.md)
+[简体中文](./README_zh.md)
 
 ---
 
-![Star History Chart](https://api.star-history.com/svg?repos=FuTseYi/YOLO_DeepSeek_Powered_CropDisease_Detection&type=Date)
+![Star History Chart](https://api.star-history.com/svg?repos=FuTseYi/YOLO-DeepSeek-Powered-CropDisease-Detection&type=Date)
 
 ### 1. Project Overview
 
-This project is an intelligent crop disease detection system that leverages the powerful **YOLO (You Only Look Once)** algorithm for real-time object detection. It is built with a modern, decoupled, full-stack architecture, assisted by the **DeepSeek** AI model for code generation and project insights. The system provides an end-to-end solution for identifying crop diseases from images, videos, and live camera feeds, aiming to offer an efficient and accurate tool for agricultural producers and researchers.
+**CropLens** is an intelligent crop disease detection platform that leverages the powerful **YOLO (You Only Look Once)** algorithm for real-time object detection. It is built with a modern, decoupled, full-stack architecture, with optional **DeepSeek** chat and agronomic text recommendations routed through a local-only Spring Boot endpoint. The system provides an end-to-end solution for identifying crop diseases from images, videos, and live camera feeds, aiming to offer an efficient and accurate tool for agricultural producers and researchers.
 
 ### 2. Core Features
 
+- **Optional AI Assistant**: DeepSeek provides text suggestions and chat in three interface views; the feature is disabled by default until locally configured. [Setup & security](docs/DEEPSEEK.md).
 - **Multi-source Detection**: Supports disease detection from static images, video files, and real-time camera streams.
 - **High-Performance Backend**: A microservices architecture featuring a **Flask** server for handling AI model inferences and a **Spring Boot** server for business logic, data management, and user interactions.
 - **Modern Frontend**: A responsive and user-friendly web interface built with **Vue 3**, **Vite**, and **Element Plus**.
@@ -28,6 +31,7 @@ This project is an intelligent crop disease detection system that leverages the 
 
 - **Frontend**: `Vue 3`, `Vite`, `Element Plus`, `Axios`, `ECharts`, `Socket.io-client`
 - **Backend (Business Logic)**: `Java 1.8`, `Spring Boot`, `MyBatis-Plus`, `MySQL/MariaDB`, `Maven`
+- **LLM Advice (Optional)**: `DeepSeek Chat` via opt-in, server-side Spring Boot relay; no API key in the Vue bundle.
 - **Backend (AI Model)**: `Python`, `Flask`, `Ultralytics (YOLO)`, `OpenCV`, `Flask-SocketIO`
 
 ### 4. Application Scenarios
@@ -48,7 +52,7 @@ This project is an intelligent crop disease detection system that leverages the 
 **Backend Setup (Spring Boot):**
 1. Navigate to the `YOLO_AI_CropDisease_Detection_SpringBoot` directory.
 2. Create a database and import the `cropdisease.sql` file.
-3. Modify the database connection settings in `src/main/resources/application.properties`.
+3. Set `DB_PASSWORD` (and optionally `DB_USERNAME`) in your environment; see [configuration guidance](docs/CONFIGURATION.md).
 4. Run the application:
    ```shell
    mvn spring-boot:run
@@ -58,10 +62,10 @@ This project is an intelligent crop disease detection system that leverages the 
 1. Navigate to the `YOLO_AI_CropDisease_Detection_Flask` directory.
 2. Install Python dependencies:
    ```shell
-   pip install -r requirements.txt
+   python -m pip install -r requirements.txt
    ```
-   *(Note: A `requirements.txt` file should be created with libraries like `ultralytics`, `flask`, `opencv-python`, `requests`, `flask-socketio`)*
-3. Download the pre-trained YOLO model weights (e.g., `yolo11n.pt`) and place them in the `weights` folder.
+   *(Dependency versions have not yet been validated; see [configuration guidance](docs/CONFIGURATION.md).)*
+3. Existing crop-specific weights are in `weights/` and `yolo11n.pt` is at the inference directory root; refer to [configuration](docs/CONFIGURATION.md) before replacing model files.
 4. Run the AI service:
    ```shell
    python main.py
@@ -71,13 +75,13 @@ This project is an intelligent crop disease detection system that leverages the 
 1. Navigate to the `YOLO_AI_CropDisease_Detection_Vue` directory.
 2. Install dependencies:
    ```shell
-   npm install
+   npm ci
    ```
 3. Start the development server:
    ```shell
    npm run dev
    ```
-4. Access the application at the address provided (e.g., `http://localhost:3000`).
+4. Access the application at the address provided (typically `http://localhost:8100`).
 
 ### 6. Contribution
 

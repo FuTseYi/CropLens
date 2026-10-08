@@ -1,0 +1,38 @@
+name: Build verification
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  vue:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: YOLO_AI_CropDisease_Detection_Vue
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: npm
+          cache-dependency-path: YOLO_AI_CropDisease_Detection_Vue/package-lock.json
+      - run: npm ci --no-audit --no-fund
+      - run: npm run build
+
+  spring-boot:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: YOLO_AI_CropDisease_Detection_SpringBoot
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '8'
+          cache: maven
+          cache-dependency-path: YOLO_AI_CropDisease_Detection_SpringBoot/pom.xml
+      - run: mvn --batch-mode --no-transfer-progress -DskipTests package

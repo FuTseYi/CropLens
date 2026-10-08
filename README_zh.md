@@ -1,5 +1,7 @@
 
-# 智能农作物病害检测系统
+# CropLens｜智能农作物病害检测平台
+
+**YOLO 病害检测 + 可选 DeepSeek 智能建议** · Vue 3 · Spring Boot · Flask
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
@@ -12,10 +14,11 @@
 
 ### 1. 项目简介
 
-本项目是一个智能农作物病害检测系统，利用强大的 **YOLO (You Only Look Once)** 算法进行实时目标检测。在 **DeepSeek** AI 模型的辅助下，项目采用现代化的、前后端分离的全栈架构构建，旨在为农业生产者和科研人员提供一个高效、精准的病害识别工具，支持从图片、视频及实时摄像头画面中识别作物病害。
+**CropLens** 是一个智能农作物病害检测系统，利用强大的 **YOLO (You Only Look Once)** 算法进行实时目标检测。并提供可选的 **DeepSeek** 智能建议与对话功能（仅通过本地 Spring Boot 服务端接口访问），项目采用前后端分离架构，旨在为农业生产者和科研人员提供一个高效、精准的病害识别工具，支持从图片、视频及实时摄像头画面中识别作物病害。
 
 ### 2. 核心功能
 
+- **可选 DeepSeek 智能助手**: 图片诊断建议、智能聊天和温室环境建议；默认关闭，需要在可信本地环境进行服务端配置。详见 [使用与安全说明](docs/DEEPSEEK.md)。
 - **多源检测**: 支持静态图片、视频文件以及实时摄像头视频流的病害检测。
 - **高性能后端**: 采用微服务架构，其中 **Flask** 服务负责 AI 模型推理，**Spring Boot** 服务处理业务逻辑、数据管理和用户交互。
 - **现代化前端**: 基于 **Vue 3**、**Vite** 和 **Element Plus** 构建的响应式、用户友好的 Web 界面。
@@ -26,6 +29,7 @@
 
 - **前端**: `Vue 3`, `Vite`, `Element Plus`, `Axios`, `ECharts`, `Socket.io-client`
 - **后端 (业务逻辑)**: `Java 1.8`, `Spring Boot`, `MyBatis-Plus`, `MySQL/MariaDB`, `Maven`
+- **大模型建议 (可选)**: `DeepSeek Chat`，通过 Spring Boot 服务端转发，不在 Vue 中填写密钥。
 - **后端 (AI 模型)**: `Python`, `Flask`, `Ultralytics (YOLO)`, `OpenCV`, `Flask-SocketIO`
 
 ### 4. 典型应用场景
@@ -46,7 +50,7 @@
 **后端启动 (Spring Boot):**
 1. 进入 `YOLO_AI_CropDisease_Detection_SpringBoot` 目录。
 2. 创建数据库，并导入根目录下的 `cropdisease.sql` 文件。
-3. 修改 `src/main/resources/application.properties` 中的数据库连接信息。
+3. 设置环境变量 `DB_PASSWORD`（可选设置 `DB_USERNAME`），参见 [配置说明](docs/CONFIGURATION.md)。
 4. 运行应用：
    ```shell
    mvn spring-boot:run
@@ -56,10 +60,10 @@
 1. 进入 `YOLO_AI_CropDisease_Detection_Flask` 目录。
 2. 安装 Python 依赖：
    ```shell
-   pip install -r requirements.txt
+   python -m pip install -r requirements.txt
    ```
-   *(注意: `requirements.txt` 文件需要您手动创建，包含 `ultralytics`, `flask`, `opencv-python`, `requests`, `flask-socketio` 等库)*
-3. 下载预训练的 YOLO 模型权重文件 (如 `yolo11n.pt`) 并放入 `weights` 文件夹。
+   *(依赖版本尚未完整验证，详见 [配置说明](docs/CONFIGURATION.md)。)*
+3. 仓库的 `weights/` 已含不同作物的模型权重，`yolo11n.pt` 位于 Flask 目录根部；替换权重前请查看 [配置说明](docs/CONFIGURATION.md)。
 4. 运行 AI 服务：
    ```shell
    python main.py
@@ -69,13 +73,13 @@
 1. 进入 `YOLO_AI_CropDisease_Detection_Vue` 目录。
 2. 安装依赖：
    ```shell
-   npm install
+   npm ci
    ```
 3. 启动开发服务器：
    ```shell
    npm run dev
    ```
-4. 在浏览器中访问提示的地址 (例如 `http://localhost:3000`)。
+4. 在浏览器中访问提示的地址 (通常为 `http://localhost:8100`)。
 
 ### 6. 贡献方式
 
