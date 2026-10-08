@@ -5,6 +5,7 @@
 
 [![Build verification](https://github.com/FuTseYi/CropLens/actions/workflows/build-check.yml/badge.svg)](https://github.com/FuTseYi/CropLens/actions/workflows/build-check.yml)
 [![Inference regression](https://github.com/FuTseYi/CropLens/actions/workflows/inference-tests.yml/badge.svg)](https://github.com/FuTseYi/CropLens/actions/workflows/inference-tests.yml)
+[![真实 YOLO CPU 推理](https://github.com/FuTseYi/CropLens/actions/workflows/real-yolo-smoke.yml/badge.svg)](https://github.com/FuTseYi/CropLens/actions/workflows/real-yolo-smoke.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
 [![Vue.js](https://img.shields.io/badge/Vue.js-3.x-brightgreen.svg)](https://vuejs.org/)
@@ -99,6 +100,8 @@ docs/          架构、部署与安全说明
 4. 在浏览器中访问提示的地址 (通常为 `http://localhost:8100`)。
 
 ## 测试与验证
+
+**真实模型验证：** 2026 年 10 月 8 日，仓库内的 9 种作物模型均在 GitHub CPU 环境中成功完成对应样本单图推理。详见 [验证记录及局限性](docs/VERIFICATION-2026-10-08.md)。该结果不代表检测准确率经过验证。
 
 日常 PR 使用轻量级自动化检查；另提供可手动触发的 **CPU 真实 YOLO 模型单图推理测试**。执行方法、测试范围与局限性详见 [测试说明](docs/TESTING.md)，实际运行通过后才可称为真实推理已验证。
 
