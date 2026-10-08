@@ -53,3 +53,9 @@ The prediction threshold now respects the UI slider, and the returned confidence
 The Flask service now accepts only model filenames already present in `inference/weights/`, and restricts image/video source URLs to its companion Spring Boot upload endpoint at `http://localhost:9999/files/<uploaded-file>` (or `127.0.0.1`). Arbitrary external image/video URLs, file paths and model names are rejected. To analyze a new image or video, first upload it through the application's local file-upload flow. Video downloads do not follow redirects and are limited to 500 MiB.
 
 This intentionally changes the previous ability to pass arbitrary remote URLs. The validation does **not** add user authentication or make the demo safe to expose on the public Internet. Source-file distribution, upload authentication, per-session inference state, and full end-to-end model evaluation remain follow-up work.
+
+## File upload storage
+
+The local Spring Boot `/files/upload` and `/files/editor/upload` endpoints now discard directory components from browser-supplied filenames, reject empty/control-character/oversized names with HTTP 400, and stream upload bytes into the configured local `backend/files/` directory instead of loading whole files into memory. Returned upload URLs encode the stored filename. Downloads match either the exact generated filename or the generated UUID followed by an underscore, avoiding arbitrary substring matches.
+
+**Scope:** This is path and memory hygiene for a local prototype, **not** user authentication or upload content validation. Limit public access, review content-type restrictions, enforce quotas and scan untrusted files before production use. Existing previously uploaded files are not renamed.
