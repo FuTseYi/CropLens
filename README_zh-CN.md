@@ -3,6 +3,8 @@
 
 **YOLO 病害检测 + 可选 DeepSeek 智能建议** · Vue 3 · Spring Boot · Flask
 
+[![Build verification](https://github.com/FuTseYi/CropLens/actions/workflows/build-check.yml/badge.svg)](https://github.com/FuTseYi/CropLens/actions/workflows/build-check.yml)
+[![Inference regression](https://github.com/FuTseYi/CropLens/actions/workflows/inference-tests.yml/badge.svg)](https://github.com/FuTseYi/CropLens/actions/workflows/inference-tests.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
 [![Vue.js](https://img.shields.io/badge/Vue.js-3.x-brightgreen.svg)](https://vuejs.org/)
@@ -98,7 +100,7 @@ docs/          架构、部署与安全说明
 
 ## 贡献方式
 
-欢迎参与贡献！您可以通过提交 Pull Request 或开启 Issue 来报告问题或提出新功能建议。
+提交修改前，请先阅读 [贡献指南](CONTRIBUTING.md)。欢迎参与贡献！您可以通过提交 Pull Request 或开启 Issue 来报告问题或提出新功能建议。
 1. Fork 本仓库。
 2. 创建您的新功能分支 (`git checkout -b feature/AmazingFeature`)。
 3. 提交您的更改 (`git commit -m 'Add some AmazingFeature'`)。
@@ -108,5 +110,7 @@ docs/          架构、部署与安全说明
 ## 许可证
 
 本项目采用 **MIT 许可证**。详情请见 `LICENSE` 文件。
+
+**安全提醒：** 本项目是本地教学原型，尚不适合未经加固的公网部署。详见 [安全说明](SECURITY.md)。
 
 **文件上传说明：** 上传媒体保存在本地 `backend/files/`，新上传文件会规范化原始文件名，但尚未加入完整的内容安全扫描和访问鉴权，因此不应直接公开部署。详见 [配置说明](docs/CONFIGURATION.md)。
