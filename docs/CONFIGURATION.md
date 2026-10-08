@@ -59,3 +59,7 @@ This intentionally changes the previous ability to pass arbitrary remote URLs. T
 The local Spring Boot `/files/upload` and `/files/editor/upload` endpoints now discard directory components from browser-supplied filenames, reject empty/control-character/oversized names with HTTP 400, and stream upload bytes into the configured local `backend/files/` directory instead of loading whole files into memory. Returned upload URLs encode the stored filename. Downloads match either the exact generated filename or the generated UUID followed by an underscore, avoiding arbitrary substring matches.
 
 **Scope:** This is path and memory hygiene for a local prototype, **not** user authentication or upload content validation. Limit public access, review content-type restrictions, enforce quotas and scan untrusted files before production use. Existing previously uploaded files are not renamed.
+
+## Local video progress WebSocket
+
+The Flask-SocketIO progress channel accepts browser origins only from `http://localhost:8100` and `http://127.0.0.1:8100`; wildcard CORS has been removed. This matches the loopback-only Vite development server. If you use a different frontend origin, do **not** remove the restriction by setting `*`; implement a deployment-specific authenticated origin and access policy instead. An allowed browser Origin is not proof of a trusted user.
