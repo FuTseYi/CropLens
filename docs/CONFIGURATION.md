@@ -7,12 +7,12 @@ The Spring Boot application now reads its database login from environment variab
 - `DB_USERNAME` (defaults to `root`)
 - `DB_PASSWORD` (defaults to empty — configure your local MySQL password)
 
-The database URL currently targets `localhost:3306/cropdisease`. Import `cropdisease.sql` before starting the service.
+The database URL currently targets `localhost:3306/cropdisease`. Import `database/schema.sql` from the repository root before starting the service.
 
 ```bash
 export DB_USERNAME=root
 export DB_PASSWORD='your-local-password'
-cd YOLO_AI_CropDisease_Detection_SpringBoot
+cd backend
 ./mvnw spring-boot:run
 ```
 
@@ -23,7 +23,7 @@ In Windows PowerShell, use `$env:DB_PASSWORD='your-local-password'` instead of `
 ## Python inference
 
 ```bash
-cd YOLO_AI_CropDisease_Detection_Flask
+cd inference
 python -m pip install -r requirements.txt
 python main.py
 ```
@@ -33,7 +33,7 @@ This dependency list reflects inspected imports; package versions and full end-t
 ## Frontend
 
 ```bash
-cd YOLO_AI_CropDisease_Detection_Vue
+cd frontend
 npm ci
 npm run dev
 ```
