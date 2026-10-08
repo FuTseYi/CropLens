@@ -1,5 +1,7 @@
 
-# 智能农作物病害检测系统
+# CropLens｜智能农作物病害检测平台
+
+**基于 YOLO 的作物病害检测系统** · Vue 3 · Spring Boot · Flask
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
@@ -12,7 +14,7 @@
 
 ### 1. 项目简介
 
-本项目是一个智能农作物病害检测系统，利用强大的 **YOLO (You Only Look Once)** 算法进行实时目标检测。在 **DeepSeek** AI 模型的辅助下，项目采用现代化的、前后端分离的全栈架构构建，旨在为农业生产者和科研人员提供一个高效、精准的病害识别工具，支持从图片、视频及实时摄像头画面中识别作物病害。
+**CropLens** 是一个智能农作物病害检测系统，利用强大的 **YOLO (You Only Look Once)** 算法进行实时目标检测。在 **DeepSeek** AI 模型的辅助下，项目采用现代化的、前后端分离的全栈架构构建，旨在为农业生产者和科研人员提供一个高效、精准的病害识别工具，支持从图片、视频及实时摄像头画面中识别作物病害。
 
 ### 2. 核心功能
 
@@ -56,9 +58,9 @@
 1. 进入 `YOLO_AI_CropDisease_Detection_Flask` 目录。
 2. 安装 Python 依赖：
    ```shell
-   pip install -r requirements.txt
+   pip install flask flask-socketio ultralytics opencv-python requests
    ```
-   *(注意: `requirements.txt` 文件需要您手动创建，包含 `ultralytics`, `flask`, `opencv-python`, `requests`, `flask-socketio` 等库)*
+   *(以上为根据现有技术栈整理的临时依赖安装方式，部署前仍需核对源码导入和版本。)*
 3. 下载预训练的 YOLO 模型权重文件 (如 `yolo11n.pt`) 并放入 `weights` 文件夹。
 4. 运行 AI 服务：
    ```shell
