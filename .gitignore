@@ -1,1 +1,15 @@
 ffmpeg-7.1-full_build
+# Editor and Python-generated files
+.idea/
+.vscode/
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+.env.*
+!.env.example
+# Local build output
+node_modules/
+dist/
+target/
