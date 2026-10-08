@@ -6,6 +6,7 @@ import requests
 from flask import Flask, Response, request
 from ultralytics import YOLO
 from predict import predictImg
+from input_validation import resolve_weight_file, validate_local_media_url
 from flask_socketio import SocketIO, emit
 
 
@@ -56,8 +57,20 @@ class VideoProcessingApp:
 
     def predictImg(self):
         """图片预测接口"""
-        data = request.get_json()
-        print(data)
+        data = request.get_json(silent=True)
+        if not isinstance(data, dict):
+            return json.dumps({"status": 400, "message": "JSON 对象无效"}, ensure_ascii=False), 400
+        try:
+            weight_path = resolve_weight_file(data.get("weight"))
+            validate_local_media_url(data.get("inputImg"))
+            threshold = float(data.get("conf"))
+            if not 0 <= threshold <= 1:
+                raise ValueError("Invalid confidence threshold")
+            if data.get("kind") not in ("corn", "rice", "wheat", "potato", "tomato",
+                                        "cotton", "apple", "grape", "strawberry"):
+                raise ValueError("Invalid crop type")
+        except (ValueError, TypeError):
+            return json.dumps({"status": 400, "message": "无效的模型、图片地址或预测参数"}, ensure_ascii=False), 400
         self.data.clear()
         self.data.update({
             "username": data['username'], "weight": data['weight'],
@@ -66,9 +79,9 @@ class VideoProcessingApp:
             "kind": data['kind']
         })
         print(self.data)
-        predict = predictImg.ImagePredictor(weights_path=f'./weights/{self.data["weight"]}',
+        predict = predictImg.ImagePredictor(weights_path=weight_path,
                                             img_path=self.data["inputImg"], save_path='./runs/result.jpg', kind=self.data["kind"],
-                                            conf=float(self.data["conf"]))
+                                            conf=threshold)
         # 执行预测
         results = predict.predict()
         uploadedUrl = self.upload('./runs/result.jpg')
@@ -89,6 +102,11 @@ class VideoProcessingApp:
 
     def predictVideo(self):
         """视频流处理接口"""
+        try:
+            weight_path = resolve_weight_file(request.args.get("weight"))
+            validate_local_media_url(request.args.get("inputVideo"))
+        except ValueError:
+            return json.dumps({"status": 400, "message": "无效的视频地址或模型"}, ensure_ascii=False), 400
         self.data.clear()
         self.data.update({
             "username": request.args.get('username'), "weight": request.args.get('weight'),
@@ -110,7 +128,7 @@ class VideoProcessingApp:
             fps,
             (640, 480)
         )
-        model = YOLO(f'./weights/{self.data["weight"]}')
+        model = YOLO(weight_path)
 
         def generate():
             try:
@@ -138,6 +156,10 @@ class VideoProcessingApp:
 
     def predictCamera(self):
         """摄像头视频流处理接口"""
+        try:
+            weight_path = resolve_weight_file(request.args.get("weight"))
+        except ValueError:
+            return json.dumps({"status": 400, "message": "无效的模型文件"}, ensure_ascii=False), 400
         self.data.clear()
         self.data.update({
             "username": request.args.get('username'), "weight": request.args.get('weight'),
@@ -145,7 +167,7 @@ class VideoProcessingApp:
             "conf": request.args.get('conf'), "startTime": request.args.get('startTime')
         })
         self.socketio.emit('message', {'data': '正在加载，请稍等！'})
-        model = YOLO(f'./weights/{self.data["weight"]}')
+        model = YOLO(weight_path)
         cap = cv2.VideoCapture(0)
         cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
         cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
