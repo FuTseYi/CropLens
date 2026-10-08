@@ -50,7 +50,7 @@
 **Backend Setup (Spring Boot):**
 1. Navigate to the `YOLO_AI_CropDisease_Detection_SpringBoot` directory.
 2. Create a database and import the `cropdisease.sql` file.
-3. Modify the database connection settings in `src/main/resources/application.properties`.
+3. Set `DB_PASSWORD` (and optionally `DB_USERNAME`) in your environment; see [configuration guidance](docs/CONFIGURATION.md).
 4. Run the application:
    ```shell
    mvn spring-boot:run
@@ -60,9 +60,9 @@
 1. Navigate to the `YOLO_AI_CropDisease_Detection_Flask` directory.
 2. Install Python dependencies:
    ```shell
-   pip install flask flask-socketio ultralytics opencv-python requests
+   python -m pip install -r requirements.txt
    ```
-   *(Provisional packages inferred from the documented stack; verify installed versions and imports before reproducible deployment.)*
+   *(Dependency versions have not yet been validated; see [configuration guidance](docs/CONFIGURATION.md).)*
 3. Download the pre-trained YOLO model weights (e.g., `yolo11n.pt`) and place them in the `weights` folder.
 4. Run the AI service:
    ```shell
