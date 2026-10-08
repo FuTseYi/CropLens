@@ -3,6 +3,8 @@
 
 **YOLO detection + optional DeepSeek-powered advice** · Vue 3 · Spring Boot · Flask
 
+[![Build verification](https://github.com/FuTseYi/CropLens/actions/workflows/build-check.yml/badge.svg)](https://github.com/FuTseYi/CropLens/actions/workflows/build-check.yml)
+[![Inference regression](https://github.com/FuTseYi/CropLens/actions/workflows/inference-tests.yml/badge.svg)](https://github.com/FuTseYi/CropLens/actions/workflows/inference-tests.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://www.python.org/)
 [![Vue.js](https://img.shields.io/badge/Vue.js-3.x-brightgreen.svg)](https://vuejs.org/)
@@ -98,7 +100,7 @@ See [architecture](docs/ARCHITECTURE.md) and [migration notes](docs/MIGRATION.md
 
 ## Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request or open an Issue to report bugs or suggest new features.
+Read [CONTRIBUTING.md](CONTRIBUTING.md) before proposing changes. Contributions are welcome! Please feel free to submit a Pull Request or open an Issue to report bugs or suggest new features.
 1. Fork the repository.
 2. Create your feature branch (`git checkout -b feature/AmazingFeature`).
 3. Commit your changes (`git commit -m 'Add some AmazingFeature'`).
@@ -108,5 +110,7 @@ Contributions are welcome! Please feel free to submit a Pull Request or open an 
 ## License
 
 This project is licensed under the **MIT License**. See the `LICENSE` file for details.
+
+**Security:** This is a local educational prototype, not a publicly hardened service. See [SECURITY.md](SECURITY.md) and [configuration](docs/CONFIGURATION.md).
 
 **File storage note:** Uploaded media is stored locally under `backend/files/` with generated identifiers. New uploads sanitize client-supplied filenames; uploaded content is **not** malware-scanned or suitable for unrestricted public deployment. See [configuration](docs/CONFIGURATION.md).
