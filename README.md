@@ -98,6 +98,10 @@ See [architecture](docs/ARCHITECTURE.md) and [migration notes](docs/MIGRATION.md
    ```
 4. Access the application at the address provided (typically `http://localhost:8100`).
 
+## Testing
+
+Regular pull requests run the lightweight CI checks. An optional manual workflow can run **one real YOLO checkpoint on a sample image using CPU**; see [testing and limitations](docs/TESTING.md). Its results must be checked separately before claiming any real inference validation.
+
 ## Contributing
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md) before proposing changes. Contributions are welcome! Please feel free to submit a Pull Request or open an Issue to report bugs or suggest new features.
