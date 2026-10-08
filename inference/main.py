@@ -8,6 +8,7 @@ from ultralytics import YOLO
 from predict import predictImg
 from input_validation import resolve_weight_file, validate_local_media_url
 from image_requests import process_image
+from socket_policy import LOCAL_VITE_ORIGINS
 from flask_socketio import SocketIO, emit
 
 
@@ -16,7 +17,7 @@ class VideoProcessingApp:
     def __init__(self, host='127.0.0.1', port=5000):
         """初始化 Flask 应用并设置路由"""
         self.app = Flask(__name__)
-        self.socketio = SocketIO(self.app, cors_allowed_origins="*")  # 初始化 SocketIO
+        self.socketio = SocketIO(self.app, cors_allowed_origins=list(LOCAL_VITE_ORIGINS))
         self.host = host
         self.port = port
         self.setup_routes()
