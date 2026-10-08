@@ -8,17 +8,28 @@
 [![Vue.js](https://img.shields.io/badge/Vue.js-3.x-brightgreen.svg)](https://vuejs.org/)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-2.3.7-lightgrey.svg)](https://spring.io/projects/spring-boot)
 
-[简体中文](./README_zh.md)
+[简体中文](./README_zh-CN.md)
 
 ---
 
-![Star History Chart](https://api.star-history.com/svg?repos=FuTseYi/YOLO-DeepSeek-Powered-CropDisease-Detection&type=Date)
+## Project layout
 
-### 1. Project Overview
+```text
+frontend/      Vue 3 + Vite web interface
+backend/       Spring Boot API + optional local DeepSeek relay
+inference/     Flask + YOLO image/video inference
+database/      SQL schema
+assets/        (planned) demonstration assets
+docs/          Configuration and design notes
+```
+
+See [architecture](docs/ARCHITECTURE.md) and [migration notes](docs/MIGRATION.md).
+
+## Overview
 
 **CropLens** is an intelligent crop disease detection platform that leverages the powerful **YOLO (You Only Look Once)** algorithm for real-time object detection. It is built with a modern, decoupled, full-stack architecture, with optional **DeepSeek** chat and agronomic text recommendations routed through a local-only Spring Boot endpoint. The system provides an end-to-end solution for identifying crop diseases from images, videos, and live camera feeds, aiming to offer an efficient and accurate tool for agricultural producers and researchers.
 
-### 2. Core Features
+## Features
 
 - **Optional AI Assistant**: DeepSeek provides text suggestions and chat in three interface views; the feature is disabled by default until locally configured. [Setup & security](docs/DEEPSEEK.md).
 - **Multi-source Detection**: Supports disease detection from static images, video files, and real-time camera streams.
@@ -27,20 +38,20 @@
 - **Real-time Communication**: Utilizes **WebSocket** for instant feedback during video processing and **ECharts** for rich data visualization of detection results.
 - **Scalable & Decoupled**: The clear separation of frontend, business logic, and AI services allows for independent development, scaling, and maintenance.
 
-### 3. Technology Stack
+## Tech stack
 
 - **Frontend**: `Vue 3`, `Vite`, `Element Plus`, `Axios`, `ECharts`, `Socket.io-client`
 - **Backend (Business Logic)**: `Java 1.8`, `Spring Boot`, `MyBatis-Plus`, `MySQL/MariaDB`, `Maven`
 - **LLM Advice (Optional)**: `DeepSeek Chat` via opt-in, server-side Spring Boot relay; no API key in the Vue bundle.
 - **Backend (AI Model)**: `Python`, `Flask`, `Ultralytics (YOLO)`, `OpenCV`, `Flask-SocketIO`
 
-### 4. Application Scenarios
+## Use cases
 
 - **Smart Agriculture**: Assists farmers in quickly identifying crop diseases for timely intervention.
 - **Agricultural Research**: Provides researchers with a tool for automated data collection and analysis of plant pathology.
 - **Educational Tool**: Serves as a comprehensive full-stack project for developers to learn about integrating AI models with web applications.
 
-### 5. Installation and Quick Start
+## Quick start
 
 **Prerequisites:**
 - `Node.js` >= 16.0
@@ -50,8 +61,8 @@
 - `MySQL` or `MariaDB`
 
 **Backend Setup (Spring Boot):**
-1. Navigate to the `YOLO_AI_CropDisease_Detection_SpringBoot` directory.
-2. Create a database and import the `cropdisease.sql` file.
+1. Navigate to the `backend` directory.
+2. Create a database and import the `database/schema.sql` file.
 3. Set `DB_PASSWORD` (and optionally `DB_USERNAME`) in your environment; see [configuration guidance](docs/CONFIGURATION.md).
 4. Run the application:
    ```shell
@@ -59,7 +70,7 @@
    ```
 
 **Backend Setup (Flask AI):**
-1. Navigate to the `YOLO_AI_CropDisease_Detection_Flask` directory.
+1. Navigate to the `inference` directory.
 2. Install Python dependencies:
    ```shell
    python -m pip install -r requirements.txt
@@ -72,7 +83,7 @@
    ```
 
 **Frontend Setup (Vue):**
-1. Navigate to the `YOLO_AI_CropDisease_Detection_Vue` directory.
+1. Navigate to the `frontend` directory.
 2. Install dependencies:
    ```shell
    npm ci
@@ -83,7 +94,7 @@
    ```
 4. Access the application at the address provided (typically `http://localhost:8100`).
 
-### 6. Contribution
+## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request or open an Issue to report bugs or suggest new features.
 1. Fork the repository.
@@ -92,6 +103,6 @@ Contributions are welcome! Please feel free to submit a Pull Request or open an 
 4. Push to the branch (`git push origin feature/AmazingFeature`).
 5. Open a Pull Request.
 
-### 7. License
+## License
 
 This project is licensed under the **MIT License**. See the `LICENSE` file for details.
