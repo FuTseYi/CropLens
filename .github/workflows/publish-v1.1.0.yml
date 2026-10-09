@@ -1,0 +1,50 @@
+name: Publish CropLens v1.1.0 (one-time)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/publish-v1.1.0.yml'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Publish GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if gh release view v1.1.0 >/dev/null 2>&1; then
+            echo 'v1.1.0 already released; no duplicate will be created.'
+            exit 0
+          fi
+          cat > "$RUNNER_TEMP/release-notes.md" <<'RELEASE_NOTES'
+          # CropLens v1.1.0 — Repository Refresh
+          
+          **English**
+          
+          This release republishes the current CropLens source under its new repository identity, following the original `v1.0` release.
+          
+          - Repository renamed from `YOLO-DeepSeek-Powered-CropDisease-Detection` to **CropLens**.
+          - Repository layout normalized into `frontend/`, `backend/`, `inference/`, `database/` and `assets/samples/`.
+          - Existing application source, model files and sample assets are included as tracked in this tag; use the repository README for setup.
+          - The earlier `v1.0` release is retained for historical reference.
+          
+          **中文**
+          
+          本次发行将更名和目录整理后的当前主分支源码作为新的版本快照：仓库统一为 **CropLens**，原有前端、Spring Boot 后端、YOLO 推理、数据库脚本和示例素材按模块组织。旧版 `v1.0` 继续保留。
+          
+          **Verification / 验证范围**
+          
+          This is a **source-code release**, not a certified model or production deployment. The release does not claim freshly verified prediction accuracy, complete image/video/camera integration, or a newly built executable. / 本发行版为源码快照，未宣称重新验证模型准确率、完整推理链路或提供新编译程序。
+          
+          GitHub automatically provides source archives (`.zip` / `.tar.gz`) for this tag.
+          RELEASE_NOTES
+          gh release create v1.1.0 --title 'CropLens v1.1.0 — Repository Refresh' --notes-file "$RUNNER_TEMP/release-notes.md" --target "$GITHUB_SHA" --latest
+          gh release view v1.1.0 --json url,tagName,name --jq '.url'
